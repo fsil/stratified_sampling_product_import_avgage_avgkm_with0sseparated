@@ -6,9 +6,28 @@ df_main = pd.read_csv("C:\\Users\\ACER\\Desktop\\strata\\pop.csv", low_memory=Fa
 
 #delete duplicates
 df = df_main.drop_duplicates(subset=['vin_or_lp'], keep='first', inplace=False)
+
 # define n0 as the number of unique vins ("name".shape[0] function counts rows// .shape[1] counts columns)
 n0 = df.shape[0]
+
 print('Unique number of VINs is', n0)
+print('Share of VHRs and ICRs:',
+      df['product'].value_counts(dropna=False, normalize=True))
+
+vhr_notimp = df[(df["product"] == "VHR") & (df["import"] == 0)]
+icr_imp = df[(df["product"] == "ICR") & (df["import"] != 0)]
+vhr_imp = df[(df["product"] == "VHR") & (df["import"] != 0)]
+icr_notimp = df[(df["product"] == "ICR") & (df["import"] == 0)]
+
+print('Number of VHR and not imports is', vhr_notimp.shape[0], 'and share in total VINs is', (vhr_notimp.shape[0]/n0))
+print('Number of VHR and imports is', vhr_imp.shape[0], 'and share in total VINs is', (vhr_imp.shape[0]/n0))
+print('Number of ICR and not imports is', icr_notimp.shape[0], 'and share in total VINs is', (icr_notimp.shape[0]/n0))
+print('Number of ICR and imports is', icr_imp.shape[0], 'and share in total VINs is', (icr_imp.shape[0]/n0))
+
+print('Average age for ICRs excluding 0Age is {}'.format(df[(df['product']=='ICR')&(df['vehicleage']!=0)]['vehicleage'].mean()))
+print('Average age for VHRs excluding 0Age is {}'.format(df[(df['product']=='VHR')&(df['vehicleage']!=0)]['vehicleage'].mean()))
+print('Avg mileage for ICRs excluding 0km is {}'.format(df[(df['product']=='ICR')&(df['lastodometerreading']!=0)]['lastodometerreading'].mean()))
+print('Avg mileage for VHRs excluding 0km is {}'.format(df[(df['product']=='VHR')&(df['lastodometerreading']!=0)]['lastodometerreading'].mean()))
 
 #set sample size
 N = 10
